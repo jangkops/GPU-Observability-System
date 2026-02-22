@@ -1,0 +1,260 @@
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+alerting:
+  alertmanagers:
+  - static_configs:
+    - targets:
+      - alertmanager:9093
+rule_files:
+- /etc/prometheus/alerts.yml
+scrape_configs:
+- job_name: prometheus
+  static_configs:
+  - targets:
+    - localhost:9090
+- job_name: g5-system
+  static_configs:
+  - targets:
+    - 10.0.1.101:9100
+    - 10.0.1.101:9400
+    - 10.0.1.101:9500
+    labels:
+      instance: g5
+      instance_type: g5.12xlarge
+- job_name: g5-process
+  static_configs:
+  - targets:
+    - 10.0.1.101:9256
+    labels:
+      instance: g5
+      instance_type: g5.12xlarge
+  metric_relabel_configs:
+  - source_labels:
+    - groupname
+    regex: ([^;]+);(.+)
+    replacement: $1
+    target_label: processname
+    action: replace
+  - source_labels:
+    - groupname
+    regex: ([^;]+);(.+)
+    replacement: $2
+    target_label: username
+    action: replace
+- job_name: r7-system
+  static_configs:
+  - targets:
+    - 10.0.1.50:9100
+    labels:
+      instance: r7
+      instance_type: r7i.4xlarge
+- job_name: r7-process
+  static_configs:
+  - targets:
+    - 10.0.1.50:9256
+    labels:
+      instance: r7
+      instance_type: r7i.4xlarge
+  metric_relabel_configs:
+  - source_labels:
+    - groupname
+    regex: ([^;]+);(.+)
+    replacement: $1
+    target_label: processname
+    action: replace
+  - source_labels:
+    - groupname
+    regex: ([^;]+);(.+)
+    replacement: $2
+    target_label: username
+    action: replace
+- job_name: p4d-system
+  honor_timestamps: false
+  static_configs:
+  - targets:
+    - 10.0.1.26:9100
+    - 10.0.1.26:9400
+    - 10.0.1.26:9500
+    labels:
+      instance: p4d
+      instance_type: p4d.24xlarge
+  metric_relabel_configs:
+  - source_labels:
+    - groupname
+    regex: ([^;]+);(.+)
+    replacement: $1
+    target_label: processname
+    action: replace
+  - source_labels:
+    - groupname
+    regex: ([^;]+);(.+)
+    replacement: $2
+    target_label: username
+    action: replace
+- job_name: p4d-process
+  static_configs:
+  - targets:
+    - 10.0.1.26:9256
+    labels:
+      instance: p4d
+      instance_type: p4d.24xlarge
+  metric_relabel_configs:
+  - source_labels:
+    - groupname
+    regex: ([^;]+);(.+)
+    replacement: $1
+    target_label: processname
+    action: replace
+  - source_labels:
+    - groupname
+    regex: ([^;]+);(.+)
+    replacement: $2
+    target_label: username
+    action: replace
+- job_name: p4de-system
+  static_configs:
+  - targets:
+    - 10.0.1.196:9100
+    - 10.0.1.196:9400
+    - 10.0.1.196:9500
+    labels:
+      instance: p4de
+      instance_type: p4de.24xlarge
+  metric_relabel_configs:
+  - source_labels:
+    - groupname
+    regex: ([^;]+);(.+)
+    replacement: $1
+    target_label: processname
+    action: replace
+  - source_labels:
+    - groupname
+    regex: ([^;]+);(.+)
+    replacement: $2
+    target_label: username
+    action: replace
+- job_name: p4de-process
+  static_configs:
+  - targets:
+    - 10.0.1.196:9256
+    labels:
+      instance: p4de
+      instance_type: p4de.24xlarge
+  metric_relabel_configs:
+  - source_labels:
+    - groupname
+    regex: ([^;]+);(.+)
+    replacement: $1
+    target_label: processname
+    action: replace
+  - source_labels:
+    - groupname
+    regex: ([^;]+);(.+)
+    replacement: $2
+    target_label: username
+    action: replace
+- job_name: head-system
+  static_configs:
+  - targets:
+    - 10.0.1.195:9100
+    - 10.0.1.195:9400
+    labels:
+      instance: head
+      instance_type: g4dn.xlarge
+  metric_relabel_configs:
+  - source_labels:
+    - groupname
+    regex: ([^;]+);(.+)
+    replacement: $1
+    target_label: processname
+    action: replace
+  - source_labels:
+    - groupname
+    regex: ([^;]+);(.+)
+    replacement: $2
+    target_label: username
+    action: replace
+- job_name: head-process
+  static_configs:
+  - targets:
+    - 10.0.1.195:9256
+    labels:
+      instance: head
+      instance_type: g4dn.xlarge
+  metric_relabel_configs:
+  - source_labels:
+    - groupname
+    regex: ([^;]+);(.+)
+    replacement: $1
+    target_label: processname
+    action: replace
+  - source_labels:
+    - groupname
+    regex: ([^;]+);(.+)
+    replacement: $2
+    target_label: username
+    action: replace
+- job_name: fsx-exporter
+  scrape_interval: 5m
+  static_configs:
+  - targets:
+    - fsx-exporter:9101
+    labels:
+      service: fsx
+- job_name: fsx-s3-top-files
+  static_configs:
+  - targets:
+    - fsx-s3-top-files:9102
+    labels:
+      service: fsx-s3-top
+- job_name: fsx-project-dirs
+  scrape_interval: 5m
+  static_configs:
+  - targets:
+    - fsx-project-exporter:9103
+    labels:
+      service: fsx-project
+- job_name: p5-system
+  static_configs:
+  - targets:
+    - 10.0.2.94:9100
+    - 10.0.2.94:9400
+    labels:
+      instance: p5
+      instance_type: p5.4xlarge
+  metric_relabel_configs:
+  - source_labels:
+    - groupname
+    regex: ([^;]+);(.+)
+    replacement: $1
+    target_label: groupname
+- job_name: p5-process
+  static_configs:
+  - targets:
+    - 10.0.2.94:9256
+    labels:
+      instance: p5
+      instance_type: p5.4xlarge
+  metric_relabel_configs:
+  - source_labels:
+    - groupname
+    regex: ([^;]+);(.+)
+    replacement: $1
+    target_label: processname
+    action: replace
+  - source_labels:
+    - groupname
+    regex: ([^;]+);(.+)
+    replacement: $2
+    target_label: username
+    action: replace
+
+- job_name: p5-gpu-process
+  static_configs:
+  - targets:
+    - 10.0.2.94:9500
+    labels:
+      instance: p5
+      instance_type: p5.4xlarge
+

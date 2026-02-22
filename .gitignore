@@ -1,0 +1,4 @@
+cat .gitignore
+echo ""
+echo "=== Git 상태 ==="
+git status
