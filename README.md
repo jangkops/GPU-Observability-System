@@ -5,9 +5,10 @@
 ## 구조
 
 ### central/
-중앙 모니터링 서버 (Prometheus + Grafana + Alertmanager)
+중앙 모니터링 서버 (Prometheus + Grafana + Alertmanager + FSx Exporter)
 - **위치**: monitoring 인스턴스 
 - **포트**: Prometheus 9090, Grafana 3000 (ALB 80)
+  - FSx Exporter: 9101
 - **URL**: http://mogam-grafana-alb-2031646283.us-west-2.elb.amazonaws.com/d/adv2ww5
 
 ### exporters/
