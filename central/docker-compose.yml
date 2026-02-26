@@ -10,7 +10,7 @@ services:
     volumes:
       - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
       - ./prometheus/alerts.yml:/etc/prometheus/alerts.yml
-      - prometheus-data:/prometheus
+      - app_prometheus-data:/prometheus
     command:
       - '--config.file=/etc/prometheus/prometheus.yml'
       - '--storage.tsdb.path=/prometheus'
@@ -19,6 +19,7 @@ services:
       - '--web.console.templates=/usr/share/prometheus/consoles'
     networks:
       - monitoring
+      - app_monitoring
 
   grafana:
     image: grafana/grafana:latest
@@ -28,14 +29,12 @@ services:
       - "3000:3000"
     volumes:
       - grafana-data:/var/lib/grafana
-      - ./grafana/grafana-datasources.yml:/etc/grafana/provisioning/datasources/datasources.yml
+      - ./grafana/provisioning:/etc/grafana/provisioning
     environment:
-      - GF_SECURITY_ADMIN_PASSWORD=mogamai1@
+      - GF_SECURITY_ADMIN_PASSWORD=admin
       - GF_USERS_ALLOW_SIGN_UP=false
     networks:
       - monitoring
-    depends_on:
-      - prometheus
 
   alertmanager:
     image: prom/alertmanager:latest
@@ -52,24 +51,41 @@ services:
     networks:
       - monitoring
 
-  fsx-exporter:
-    build: ./fsx-exporter
-    container_name: fsx-exporter
+  sns-webhook:
+    image: sns-webhook:latest
+    container_name: sns-webhook
     restart: unless-stopped
-    privileged: true
     ports:
-      - "9101:9101"
+      - "5001:5001"
+    networks:
+      - monitoring
+
+  node-exporter:
+    image: prom/node-exporter:latest
+    container_name: node-exporter
+    restart: unless-stopped
+    ports:
+      - "9100:9100"
+    command:
+      - '--path.procfs=/host/proc'
+      - '--path.sysfs=/host/sys'
+      - '--collector.filesystem.mount-points-exclude=^/(sys|proc|dev|host|etc)($$|/)'
     volumes:
-      - /fsx:/fsx:ro
+      - /proc:/host/proc:ro
+      - /sys:/host/sys:ro
+      - /:/rootfs:ro
       - /etc/passwd:/etc/passwd:ro
     networks:
       - monitoring
 
 volumes:
-  prometheus-data:
+  app_prometheus-data:
+    external: true
   grafana-data:
   alertmanager-data:
 
 networks:
   monitoring:
     driver: bridge
+  app_monitoring:
+    external: true
