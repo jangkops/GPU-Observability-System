@@ -1,0 +1,49 @@
+version: '3'
+services:
+  node-exporter:
+    image: prom/node-exporter:latest
+    container_name: node-exporter
+    network_mode: host
+    pid: host
+    volumes:
+      - /proc:/host/proc:ro
+      - /sys:/host/sys:ro
+      - /:/rootfs:ro
+    command:
+      - '--path.procfs=/host/proc'
+      - '--path.sysfs=/host/sys'
+      - '--path.rootfs=/rootfs'
+
+  process-exporter:
+    image: python:3.9-slim
+    container_name: process-exporter
+    network_mode: host
+    volumes:
+      - /sys/fs/cgroup:/sys/fs/cgroup:ro
+      - /etc/passwd:/etc/passwd:ro
+      - ./cgroup_user_cpu_exporter.py:/app/exporter.py:ro
+    command: sh -c "pip install prometheus_client -q && python /app/exporter.py"
+
+  dcgm-exporter:
+    image: nvcr.io/nvidia/k8s/dcgm-exporter:3.3.5-3.4.0-ubuntu22.04
+    container_name: dcgm-exporter
+    network_mode: host
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - capabilities: [gpu]
+
+  gpu-process-exporter:
+    image: nvcr.io/nvidia/cuda:12.2.0-base-ubuntu22.04
+    container_name: gpu-process-exporter
+    ports:
+      - "9500:9500"
+    volumes:
+      - /proc:/host/proc:ro
+      - /etc/passwd:/etc/passwd:ro
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - capabilities: [gpu]

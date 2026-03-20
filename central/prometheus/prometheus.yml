@@ -259,6 +259,7 @@ scrape_configs:
       instance_type: p5.4xlarge
 
 - job_name: dgx-system
+  scrape_interval: 5s
   static_configs:
   - targets:
     - 182.162.160.68:9100
@@ -270,16 +271,18 @@ scrape_configs:
   metric_relabel_configs:
   - source_labels: [groupname]
     regex: ([^;]+);(.+)
-    replacement: \$1
+    replacement: $1
     target_label: processname
     action: replace
   - source_labels: [groupname]
     regex: ([^;]+);(.+)
-    replacement: \$2
+    replacement: $2
     target_label: username
     action: replace
 
 - job_name: dgx-process
+  scrape_interval: 30s
+  scrape_timeout: 25s
   static_configs:
   - targets:
     - 182.162.160.68:9256
@@ -289,11 +292,11 @@ scrape_configs:
   metric_relabel_configs:
   - source_labels: [groupname]
     regex: ([^;]+);(.+)
-    replacement: \$1
+    replacement: $1
     target_label: processname
     action: replace
   - source_labels: [groupname]
     regex: ([^;]+);(.+)
-    replacement: \$2
+    replacement: $2
     target_label: username
     action: replace
