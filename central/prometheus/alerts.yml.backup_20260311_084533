@@ -14,8 +14,8 @@ groups:
 
       # 메모리 부족
       - alert: HighMemoryUsage
-        expr: (1 - (node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes)) > 0.70
-        for: 0s
+        expr: (1 - (node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes)) > 0.9
+        for: 3m
         labels:
           severity: warning
         annotations:

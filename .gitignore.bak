@@ -1,0 +1,8 @@
+prometheus-data/
+*.log
+.env
+
+# 민감 정보
+*.env.local
+**/grafana.env.local
+central/grafana/grafana.env.production

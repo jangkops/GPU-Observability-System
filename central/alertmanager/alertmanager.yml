@@ -2,10 +2,10 @@ global:
   resolve_timeout: 5m
 
 route:
-  group_by: ['alertname', 'instance']
+  group_by: ['alertname', 'instance', 'username']
   group_wait: 10s
   group_interval: 10s
-  repeat_interval: 8760h
+  repeat_interval: 12h
   receiver: 'sns-webhook'
 
 receivers:
