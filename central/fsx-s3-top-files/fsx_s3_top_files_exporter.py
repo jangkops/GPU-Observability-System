@@ -11,6 +11,7 @@ CACHE_TTL = 300
 def get_top_files(directory, limit=10):
     """lfs find --lazy: 부하 없이 초고속 스캔"""
     try:
+        # 타임아웃 300초 (5분)
         result = subprocess.run(
             ['lfs', 'find', directory, '--lazy', '--size', '+10G', '--type', 'f'],
             capture_output=True, text=True, timeout=300
@@ -62,7 +63,7 @@ def update_cache():
                     cache["timestamp"] = time.time()
                 print(f"[{time.strftime('%H:%M:%S')}] Updated ({subdir})")
             
-            print(f"[{time.strftime('%H:%M:%S')}] Complete")
+            print(f"[{time.strftime('%H:%M:%S')}] ✅ Complete")
         except Exception as e:
             print(f"Error: {e}")
         

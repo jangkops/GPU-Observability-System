@@ -137,7 +137,7 @@ def webhook():
     elif alertname == 'HighMemoryUsage':
         message_lines.append("메모리 과부하 주의 알림")
         message_lines.append("")
-        message_lines.append(f"{user} 님의 작업으로 인해 메모리 사용률이 70% 이상 과부하 중입니다.")
+        message_lines.append(f"{user} 님의 작업으로 인해 메모리 사용률이 90% 이상 과부하 중입니다.")
         message_lines.append(f"{instance} 서버에서 작업 중인 사항을 확인하고 주의해주세요.")
         message_lines.append("조치가 없을 경우 서버가 다운되거나 다른 사용자의 작업에 영향을 줄 수 있습니다.")
         message_lines.append("")

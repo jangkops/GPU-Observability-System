@@ -12,6 +12,7 @@ CACHE_TTL = 21600  # 6시간
 def get_directory_size(directory):
     """lfs find --lazy로 파일 목록, stat으로 크기 계산"""
     try:
+        # 파일 목록만 가져오기 (빠름)
         result = subprocess.run(
             ['lfs', 'find', directory, '--lazy', '-type', 'f'],
             capture_output=True, text=True, timeout=60
@@ -20,7 +21,7 @@ def get_directory_size(directory):
         total = 0
         count = 0
         for filepath in result.stdout.strip().split('\n'):
-            if filepath and count < 1000:
+            if filepath and count < 1000:  # 최대 1000개만 (안전)
                 count += 1
                 try:
                     stat_result = subprocess.run(
@@ -64,7 +65,7 @@ def update_cache():
                 cache["data"] = metrics
                 cache["timestamp"] = time.time()
             
-            print(f"[{time.strftime('%Y-%m-%d %H:%M:%S')}] Scan complete. Next scan in 6 hours.")
+            print(f"[{time.strftime('%Y-%m-%d %H:%M:%S')}] ✅ Scan complete. Next scan in 6 hours.")
         except Exception as e:
             print(f"Error: {e}")
         
