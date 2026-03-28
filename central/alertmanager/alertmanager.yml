@@ -5,7 +5,7 @@ route:
   group_by: ['alertname', 'instance', 'username']
   group_wait: 10s
   group_interval: 10s
-  repeat_interval: 12h
+  repeat_interval: 24h
   receiver: 'sns-webhook'
 
 receivers:
