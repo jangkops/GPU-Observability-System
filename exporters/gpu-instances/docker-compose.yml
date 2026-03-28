@@ -11,7 +11,6 @@ services:
       - /:/host:ro,rslave
     command:
       - '--path.rootfs=/host'
-      - '--collector.filesystem.mount-points-exclude=^/(sys|proc|dev|host|etc)($$|/)'
 
   dcgm-exporter:
     image: nvcr.io/nvidia/k8s/dcgm-exporter:3.3.5-3.4.0-ubuntu22.04
@@ -33,10 +32,10 @@ services:
     volumes:
       - /proc:/host/proc:ro
       - /etc/passwd:/etc/passwd:ro
-      - ./process-exporter.yml:/config/process-exporter.yml
+      - ./process-exporter-config.yml:/config/process-exporter-config.yml:ro
     command:
       - '--procfs=/host/proc'
-      - '--config.path=/config/process-exporter.yml'
+      - '-config.path=/config/process-exporter-config.yml'
 
   gpu-process-exporter:
     build:
